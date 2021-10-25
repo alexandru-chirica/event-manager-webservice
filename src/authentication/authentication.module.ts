@@ -15,13 +15,13 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   controllers: [AuthenticationController],
   imports: [
     JwtModule.registerAsync({
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('secret'),
         signOptions: {
           expiresIn: configService.get<number>('tokenExpirationInSeconds'),
         },
       }),
-      inject: [ConfigService],
     }),
     PassportModule,
   ],
@@ -34,6 +34,5 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     JwtStrategy,
     UserService,
   ],
-  exports: [LocalStrategy],
 })
 export class AuthenticationModule {}

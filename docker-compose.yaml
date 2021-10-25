@@ -15,6 +15,7 @@ services:
       - event-manager-network
     depends_on:
       - mongodb
+      - mongo-express
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -32,17 +33,22 @@ services:
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: @Secret123#$%
+      MONGO_INITDB_ROOT_PASSWORD: Secret123456
 
   mongo-express:
-    image: mongo-express
+    container_name: mongo_express
+    image: mongo-express:latest
+    depends_on:
+      - mongodb
     restart: always
     ports:
       - 8081:8081
+    networks:
+      - event-manager-network
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: @Secret123#$%
-      ME_CONFIG_MONGODB_URL: mongodb://root:@Secret123#$%@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINPASSWORD: Secret123456
+      ME_CONFIG_MONGODB_SERVER: mongodb
 
   prod:
     container_name: event_manager_prod

@@ -5,23 +5,20 @@ import { Avatar } from './avatar.entity';
 @Entity()
 export class User {
   @Column(() => Avatar)
-  avatar: Avatar;
+  avatar?: Avatar;
 
   @Column({ default: new Date() })
-  createdDate: Date;
-
-  @Column()
-  firstName: string;
+  createdDate?: Date;
 
   @ObjectIdColumn()
-  id: ObjectID;
+  id?: ObjectID;
 
   @Column()
-  lastName: string;
+  name: string;
 
   @Column()
   password: string;
 
   @Column({ default: new Date() })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

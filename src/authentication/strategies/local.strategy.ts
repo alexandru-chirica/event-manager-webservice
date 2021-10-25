@@ -9,7 +9,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   // -- Constructor ---
 
   constructor(private authenticationService: AuthenticationService) {
-    super();
+    super({ usernameField: 'email' });
   }
 
   // --- Public methods ---

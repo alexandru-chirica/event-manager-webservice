@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../../shared/services/user.service';
 import { ILoginUserData } from '../contracts/login-user-data.interface';
-import { HashingOptionsModel } from '../models/hashing-options.model';
+import { CreateUserDto } from '../dtos/create-user.dto';
 import { HasherService } from './hasher.service';
 
 @Injectable()
@@ -18,10 +18,23 @@ export class AuthenticationService {
 
   // --- Public methods ---
 
-  async login(usedData: ILoginUserData) {
-    const token = this.jwtService.sign(usedData);
+  async login(userData: ILoginUserData) {
+    const token = this.jwtService.sign(userData);
 
     return token;
+  }
+
+  async register(userData: CreateUserDto) {
+    const { email, password } = userData;
+    const foundUser = await this.userService.findOneByEmail(email);
+
+    if (foundUser) {
+      throw new ConflictException('The specified email is already registed.');
+    }
+
+    const newPassword = await this.hasherService.hash(password);
+
+    await this.userService.insertOne({ ...userData, password: newPassword });
   }
 
   async validateUser(email: string, password: string) {
@@ -32,22 +45,7 @@ export class AuthenticationService {
     }
 
     const { password: hashedPassword, ...user } = foundUser;
-    const options = new HashingOptionsModel();
-    const { needsUpgrade, verified } = await this.hasherService.check(
-      hashedPassword,
-      password,
-      options,
-    );
-
-    // Update the hashed password with the new iterations count since it's outdated.
-    if (needsUpgrade) {
-      const newPassword = await this.hasherService.hash(password, options);
-
-      await this.userService.updateOne(email, {
-        password: newPassword,
-        updatedAt: new Date(),
-      });
-    }
+    const verified = await this.hasherService.check(hashedPassword, password);
 
     return verified ? user : null;
   }

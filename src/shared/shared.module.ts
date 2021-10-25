@@ -16,7 +16,7 @@ import { UserService } from './services/user.service';
     }),
     DatabaseAccessModule,
   ],
-  providers: [DatabaseContextService, UserService],
+  providers: [ConfigService, DatabaseContextService, UserService],
   exports: [ConfigService, DatabaseContextService, UserService],
 })
 export class SharedModule {}
