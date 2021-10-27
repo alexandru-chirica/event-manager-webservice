@@ -1,27 +1,28 @@
-import { Entity, ObjectID, ObjectIdColumn, Column } from 'typeorm';
-
-import { Avatar } from './avatar.entity';
+import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 
 @Entity()
-export class User {
-  @Column(() => Avatar)
-  avatar?: Avatar;
-
+export class Event {
   @Column({ default: new Date() })
   createdDate?: Date;
 
   @Column()
-  email: string;
+  endDate: Date;
 
   @ObjectIdColumn()
   id?: ObjectID;
 
   @Column()
+  location: string;
+
+  @Column()
   name: string;
 
   @Column()
-  password: string;
+  startDate: Date;
 
   @Column({ default: new Date() })
   updatedAt?: Date;
+
+  @Column()
+  userId: string;
 }

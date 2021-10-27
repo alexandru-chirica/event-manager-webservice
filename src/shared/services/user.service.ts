@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { FindConditions, FindManyOptions, ObjectLiteral } from 'typeorm';
 
-import { DatabaseContextService } from '../../database-access/services/database-context.service';
 import { User } from '../../database-access/entities/user.entity';
+import { DatabaseContextService } from '../../database-access/services/database-context.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +16,10 @@ export class UserService {
     return this.databaseContextService.User.repository.find(
       optionsOrConditions,
     );
+  }
+
+  async findByIds(ids: Array<string>) {
+    return this.databaseContextService.User.repository.findByIds(ids);
   }
 
   async findOneByEmail(email: string) {

@@ -1,7 +1,6 @@
 export default () => ({
   database: {
-    name: process.env.DATABASE_NAME || 'test',
-    host: process.env.DATABASE_HOST || 'mongodb',
+    host: process.env.DATABASE_HOST || 'localhost',
     password: process.env.DATABASE_PASSWORD || 'Secret123456',
     port: parseInt(process.env.DATABASE_PORT, 10) || 27017,
     user: process.env.DATABASE_USER || 'root',

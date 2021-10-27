@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Event } from './entities/event.entity';
 import { User } from './entities/user.entity';
 import { DatabaseContextService } from './services/database-context.service';
 
@@ -10,8 +11,7 @@ import { DatabaseContextService } from './services/database-context.service';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        database: configService.get<string>('database.name'),
-        entities: [User],
+        entities: [Event, User],
         host: configService.get<string>('database.host'),
         password: configService.get<string>('database.password'),
         port: configService.get<number>('database.port'),
