@@ -1,0 +1,77 @@
+version: '3.9'
+
+services:
+  dev:
+    container_name: event_manager_dev
+    image: event-manager-api-dev:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:dev
+    ports:
+      - 3000:3000
+      - 3001:9229
+    networks:
+      - event-manager-network
+    depends_on:
+      - mongodb
+      - mongo-express
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  mongodb:
+    image : mongo:latest
+    container_name: mongodb
+    volumes:
+      - db:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - event-manager-network
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Secret123456
+
+  mongo-express:
+    container_name: mongo_express
+    image: mongo-express:latest
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - event-manager-network
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: Secret123456
+      ME_CONFIG_MONGODB_SERVER: mongodb
+
+  prod:
+    container_name: event_manager_prod
+    image: event-manager-api-prod:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 3000:3000
+      - 9229:9229
+    networks:
+      - event-manager-network
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    
+networks:
+  event-manager-network:
+    driver: bridge
+
+volumes:
+  db:
